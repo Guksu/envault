@@ -1,6 +1,6 @@
 {
   "name": "@guksu/envault",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Type-safe config validation toolkit - manage env and JSON with a single schema",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -16,7 +16,10 @@
     "envault": "./dist/cli/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md",
+    "README.ko.md"
   ],
   "scripts": {
     "build": "tsup",
