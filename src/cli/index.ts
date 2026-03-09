@@ -1,4 +1,9 @@
+#!/usr/bin/env node
 import { Command } from "commander";
+import { runCheck } from "./check";
+import { runGenerate } from "./generate";
+import { runDiff } from "./diff";
+import { runAudit } from "./audit";
 
 const program = new Command();
 
@@ -10,32 +15,33 @@ program
 program
   .command("check")
   .description("Validate current environment configuration")
-  .option("-c, --config <path>", "Config file path", "envault.config.ts")
+  .option("-c, --config <path>", "Config file path", "envault.config.js")
   .option("-e, --env <path>", "Env file path to check")
-  .action(() => {
-    console.log("TODO: check command");
+  .action((opts: { config: string; env?: string }) => {
+    runCheck(opts.config, opts.env);
   });
 
 program
   .command("generate")
   .description("Generate .env.example file")
+  .option("-c, --config <path>", "Config file path", "envault.config.js")
   .option("-o, --output <path>", "Output file path", ".env.example")
-  .action(() => {
-    console.log("TODO: generate command");
+  .action((opts: { config: string; output: string }) => {
+    runGenerate(opts.config, opts.output);
   });
 
 program
   .command("diff <file1> <file2>")
   .description("Compare two environment files")
-  .action(() => {
-    console.log("TODO: diff command");
+  .action((file1: string, file2: string) => {
+    runDiff(file1, file2);
   });
 
 program
-  .command("audit")
-  .description("Detect potential secrets exposure")
-  .action(() => {
-    console.log("TODO: audit command");
+  .command("audit [files...]")
+  .description("Detect potential secrets in env files")
+  .action((files: string[]) => {
+    runAudit(files);
   });
 
 program.parse();

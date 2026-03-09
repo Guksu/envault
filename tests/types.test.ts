@@ -151,5 +151,132 @@ describe("Type Builders", () => {
       const type = t.boolean().required();
       expect(() => type.parse(undefined)).toThrow("Value is required");
     });
+
+    it("should accept native boolean from JSON source", () => {
+      expect(t.boolean().parse(true)).toBe(true);
+      expect(t.boolean().parse(false)).toBe(false);
+    });
+  });
+
+  describe("t.array()", () => {
+    it("should parse comma-separated string", () => {
+      expect(t.array().parse("a,b,c")).toEqual(["a", "b", "c"]);
+    });
+
+    it("should trim whitespace from items", () => {
+      expect(t.array().parse("a, b, c")).toEqual(["a", "b", "c"]);
+    });
+
+    it("should use custom separator", () => {
+      expect(t.array().separator("|").parse("a|b|c")).toEqual(["a", "b", "c"]);
+    });
+
+    it("should return undefined when not set", () => {
+      expect(t.array().parse(undefined)).toBeUndefined();
+    });
+
+    it("should throw when required and undefined", () => {
+      expect(() => t.array().required().parse(undefined)).toThrow("Value is required");
+    });
+
+    it("should return default when undefined", () => {
+      expect(t.array().default(["x", "y"]).parse(undefined)).toEqual(["x", "y"]);
+    });
+
+    it("should accept native array from JSON source", () => {
+      expect(t.array().parse(["a", "b"])).toEqual(["a", "b"]);
+    });
+  });
+
+  describe("t.json()", () => {
+    it("should parse JSON string", () => {
+      expect(t.json().parse('{"a":1}')).toEqual({ a: 1 });
+    });
+
+    it("should throw on invalid JSON", () => {
+      expect(() => t.json().parse("{invalid}")).toThrow("Invalid JSON");
+    });
+
+    it("should pass through already-parsed object", () => {
+      const obj = { key: "value" };
+      expect(t.json().parse(obj)).toEqual(obj);
+    });
+
+    it("should return undefined when not set", () => {
+      expect(t.json().parse(undefined)).toBeUndefined();
+    });
+
+    it("should throw when required and undefined", () => {
+      expect(() => t.json().required().parse(undefined)).toThrow("Value is required");
+    });
+  });
+
+  describe("t.url()", () => {
+    it("should accept valid URL", () => {
+      expect(t.url().parse("https://example.com")).toBe("https://example.com");
+    });
+
+    it("should throw on invalid URL", () => {
+      expect(() => t.url().parse("not-a-url")).toThrow("Invalid URL");
+    });
+
+    it("should return undefined when not set", () => {
+      expect(t.url().parse(undefined)).toBeUndefined();
+    });
+
+    it("should throw when required and undefined", () => {
+      expect(() => t.url().required().parse(undefined)).toThrow("Value is required");
+    });
+  });
+
+  describe("t.email()", () => {
+    it("should accept valid email", () => {
+      expect(t.email().parse("user@example.com")).toBe("user@example.com");
+    });
+
+    it("should throw on invalid email", () => {
+      expect(() => t.email().parse("not-an-email")).toThrow("Invalid email");
+    });
+
+    it("should return undefined when not set", () => {
+      expect(t.email().parse(undefined)).toBeUndefined();
+    });
+
+    it("should throw when required and undefined", () => {
+      expect(() => t.email().required().parse(undefined)).toThrow("Value is required");
+    });
+  });
+
+  describe("t.enum()", () => {
+    it("should accept valid enum value", () => {
+      const type = t.enum(["development", "production", "test"] as const);
+      expect(type.parse("development")).toBe("development");
+    });
+
+    it("should throw on invalid enum value with message", () => {
+      expect(() => t.enum(["a", "b", "c"] as const).parse("d")).toThrow(
+        'Invalid enum value "d"'
+      );
+    });
+
+    it("should list allowed values in error message", () => {
+      expect(() => t.enum(["a", "b", "c"] as const).parse("x")).toThrow(
+        "Must be one of: a, b, c"
+      );
+    });
+
+    it("should return undefined when not set", () => {
+      expect(t.enum(["a", "b"] as const).parse(undefined)).toBeUndefined();
+    });
+
+    it("should throw when required and undefined", () => {
+      expect(() => t.enum(["a", "b"] as const).required().parse(undefined)).toThrow(
+        "Value is required"
+      );
+    });
+
+    it("should use default when not set", () => {
+      expect(t.enum(["a", "b"] as const).default("a").parse(undefined)).toBe("a");
+    });
   });
 });

@@ -1,5 +1,5 @@
 {
-  "name": "envault",
+  "name": "@guksu/envault",
   "version": "0.0.1",
   "description": "Type-safe config validation toolkit - manage env and JSON with a single schema",
   "main": "./dist/index.js",

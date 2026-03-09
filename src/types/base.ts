@@ -6,16 +6,6 @@ export class TypeBuilder<T> {
   protected _validators: ((value: T) => boolean)[] = [];
   protected _transformers: ((value: T) => T)[] = [];
 
-  required(): this {
-    this._required = true;
-    return this;
-  }
-
-  default(value: T): this {
-    this._default = value;
-    return this;
-  }
-
   sensitive(): this {
     this._sensitive = true;
     return this;
@@ -37,20 +27,13 @@ export class TypeBuilder<T> {
   }
 
   getData() {
-    const isSensitive = this._sensitive;
-    const isRequired = this._required;
-    const defaultValue = this._default;
-    const source = this._source;
-    const validators = this._validators;
-    const transformers = this._transformers;
-
     return {
-      isSensitive,
-      isRequired,
-      defaultValue,
-      source,
-      validators,
-      transformers,
+      isSensitive: this._sensitive,
+      isRequired: this._required,
+      defaultValue: this._default,
+      source: this._source,
+      validators: this._validators,
+      transformers: this._transformers,
     };
   }
 }
